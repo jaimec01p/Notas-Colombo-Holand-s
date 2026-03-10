@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro docente</title>
+  <link rel="stylesheet" href="/static/css/estilo_auth.css">
+</head>
+<body>
+  <div class="auth-wrapper">
+    <div class="auth-card">
+      <h1>Registro docente</h1>
+      <p class="muted">Solo personal autorizado de la institución</p>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, msg in messages %}
+            <div class="flash {{ category }}">{{ msg }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <form method="POST" action="{{ url_for('register') }}" class="auth-form">
+
+        <div class="form-grid">
+
+          <div>
+            <label>N° identificación</label>
+            <input type="text" name="identificacion" required>
+          </div>
+
+          <div>
+            <label>Email</label>
+            <input type="email" name="email" required>
+          </div>
+
+          <div>
+            <label>Nombres</label>
+            <input type="text" name="nombres" required>
+          </div>
+
+          <div>
+            <label>Apellidos</label>
+            <input type="text" name="apellidos" required>
+          </div>
+
+        </div>
+        
+        <label>Llave institucional</label>
+        <input type="text" name="llave" required>
+
+        <label>Contraseña</label>
+        <input type="password" name="password" required>
+
+        <label>Confirmar contraseña</label>
+        <input type="password" name="confirm_password" required>
+
+        <button type="submit" class="btn primary">Crear cuenta</button>
+
+      </form>
+
+      <p class="auth-link">
+        ¿Ya tienes cuenta?
+        <a href="{{ url_for('login') }}">Inicia sesión</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

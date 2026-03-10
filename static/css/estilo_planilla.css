@@ -1,0 +1,439 @@
+/* ====== BASE ====== */
+body{
+  margin: 0;
+  padding: 24px;
+  background: #f5f6f8;
+  font-family: Arial, sans-serif;
+}
+
+/* ====== TOPBAR ====== */
+.topbar{
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+
+  background-color: rgb(34, 44, 247);
+  color: white;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 14px;
+  margin-top: -10px;
+}
+
+.topbar .info {
+  text-align: center;
+  justify-self: center;
+}
+
+.info h1{
+  margin:0;
+  font-size: 22px;
+}
+
+.muted{
+  color:#666;
+  font-size: 13px;
+  margin-top:4px;
+}
+
+/* ====== BOTONES ====== */
+.btn{
+  padding:10px 14px;
+  border:1px solid #ccc;
+  background:#fff;
+  border-radius:10px;
+  cursor:pointer;
+  text-decoration:none;
+  color:#000;
+  font-size:14px;
+}
+
+.btn:hover{
+  background:#eee;
+}
+
+.btn.primary{
+  background: white;
+  color:black;
+  border-color:rgb(34, 44, 247);
+}
+
+.btn.primary:hover{
+  background:rgb(230, 230,230);
+}
+
+/* ====== FLASH ====== */
+.flash{
+  padding:10px 12px;
+  border-radius:10px;
+  margin:10px 0;
+}
+
+.flash.success{
+  background:#e9f7ef;
+  border:1px solid #b7e1c7;
+}
+
+.flash.error{
+  background:#fdecea;
+  border:1px solid #f5c2c0;
+}
+
+/* ====== PLANILLA (GRADEBOOK) ====== */
+.gradebook-wrap{
+  background:#ffffff;
+  border-radius:14px;
+  box-shadow:0 10px 30px rgba(0,0,0,.08);
+  overflow:hidden;
+}
+
+/* Contenedor del área de la tabla */
+.table-area{
+  position: relative;
+}
+
+/* Mensaje profesional centrado cuando no hay actividades */
+.empty-actividades{
+  position: sticky;
+  top: 50%;
+  transform: translateY(-50%);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-weight: 700;
+  color: #555;
+
+  z-index: 20;
+  pointer-events: none;
+
+  text-align: center;
+}
+
+.table-scroll{
+  overflow:auto;
+  max-height: 81vh;
+  overflow-x: hidden;
+}
+
+.table-inner {
+  display: inline-block;
+}
+
+/* Tabla */
+table.gradebook{
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
+  width: auto;
+}
+
+table.gradebook th,
+table.gradebook td{
+  border-right: 1px solid #eeeeee;
+  border-bottom: 1px solid #eee;
+  padding: 10px 12px;
+  background:#ffffff;
+  white-space: nowrap;
+}
+
+/* Columnas de actividades fijas */
+table.gradebook th:not(.sticky-col),
+table.gradebook td:not(.sticky-col){
+  width: 60px;           /* tamaño fijo para cada actividad */
+  min-width: 60px;
+  max-width: 60px;
+}
+
+.th-actividad{
+  height: 140px;
+  vertical-align: bottom;
+  padding: 0px;
+  text-align: center;
+}
+
+.th-actividad span {
+  writing-mode: vertical-rl;   /* texto vertical */
+  transform: rotate(180deg);   /* lo hace leer hacia arriba */
+  white-space: nowrap;
+  font-size: 13px;
+}
+
+.th-estudiantes {
+  padding: 0;
+  vertical-align: top;
+  background: transparent;
+}
+
+.th-estudiantes-inner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.logo {
+  border-radius: 70px;
+  width: 100px;
+  margin-bottom: 15px;
+}
+
+/* Encabezado fijo */
+table.gradebook thead th{
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background:rgb(34, 44, 247);
+  color: white;
+  font-weight:700;
+  border-radius: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Columna izquierda fija (estudiantes) */
+table.gradebook .sticky-col{
+  position: sticky;
+  left: 0;
+  z-index: 4;
+  background:#ffffff;
+  font-weight:700;
+  width: 260px;
+  min-width: 260px;
+  max-width: 260px;
+  color: black;
+}
+
+/* Esquina superior izquierda */
+table.gradebook thead .sticky-col{
+  z-index: 5;
+  background:rgb(34, 44, 247);
+  color: white;
+}
+
+
+/* Hover fila */
+table.gradebook tbody tr:hover td{
+  background:#f9fafc;
+}
+
+table.gradebook tbody td {
+  padding: 7px 8px;
+}
+
+table.gradebook tbody tr:hover .sticky-col{
+  background:#f9fafc;
+}
+
+/* ====== INPUT NOTAS ====== */
+.nota{
+  width:100%;
+  height: 24px;
+  box-sizing: border-box;
+  padding:2px 0px;
+  border:1px solid #ccc;
+  border-radius:10px;
+  outline:none;
+  text-align:center;
+  font-size:14px;
+  transition:.2s;
+}
+
+.nota:focus{
+  border-color:#666;
+}
+
+/* Quitar flechas en Chrome, Edge, Safari */
+.nota::-webkit-outer-spin-button,
+.nota::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Quitar estilo number en Firefox */
+.nota {
+  appearance: textfield;
+}
+
+/* Columna final */
+.th-final, .td-final{
+  width: 60px;
+  min-width: 60px;
+  max-width: 60px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.th-final{
+  background: rgb(34, 44, 247);
+  color: #fff;
+}
+
+.final{
+  display: inline-block;
+  min-width: 48px;
+  padding: 2px 2px;
+  border-radius: 10px;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+}
+
+/* ====== MODAL ====== */
+.backdrop{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 9999;
+}
+
+.backdrop.open{
+  display:flex;
+}
+
+.modal{
+  background:#fff;
+  width:min(520px, 100%);
+  border-radius:14px;
+  padding:18px;
+  box-shadow:0 14px 40px rgba(0,0,0,.25);
+}
+
+.modal h2{
+  margin:0 0 12px;
+  font-size:18px;
+}
+
+label{
+  display:block;
+  font-size:13px;
+  margin-top:10px;
+}
+
+.modal input{
+  width:100%;
+  box-sizing:border-box;
+  padding:10px;
+  border:1px solid #ccc;
+  border-radius:10px;
+  margin-top:6px;
+  outline:none;
+}
+
+.modal input:focus{
+  border-color:#666;
+}
+
+.actions{
+  display:flex;
+  gap:10px;
+  justify-content:flex-end;
+  margin-top:14px;
+}
+
+/* ====== RESPONSIVE ====== */
+@media (max-width: 900px){
+  body{
+    padding:14px;
+  }
+
+  .topbar{
+    flex-wrap:wrap;
+    gap:10px;
+  }
+
+  table.gradebook{
+    min-width: 700px;
+  }
+}
+.right-buttons{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.modal-actividades{
+  width: min(760px, 100%);
+  max-height: 85vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.actividad-list{
+  margin-top: 10px;
+  display: grid;
+  gap: 10px;
+  max-height: 55vh;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.actividad-item{
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 12px;
+  background: #fafafa;
+}
+
+.actividad-view{
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.actividad-name{
+  font-weight: 600;
+  color: #222;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.actividad-actions-inline{
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.actividad-edit-row{
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+}
+
+.actividad-edit-row input{
+  margin: 0;
+}
+
+.actividad-delete-confirm{
+  display: block;
+}
+
+.actividad-delete-confirm p{
+  margin: 0 0 10px 0;
+  color: #333;
+  font-weight: 600;
+}
+
+.btn-danger{
+  background: #c62828;
+  color: white;
+  border-color: #c62828;
+}
+
+.btn-danger:hover{
+  background: #a61f1f;
+}

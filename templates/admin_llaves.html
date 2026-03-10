@@ -1,0 +1,62 @@
+{% extends "admin.html" %}
+
+{% block title %}Gestión de llaves{% endblock %}
+{% block page_title %}Gestión de llaves{% endblock %}
+
+{% block content %}
+<div class="card form-card">
+  <h3>Crear nueva llave</h3>
+
+  <form method="POST" class="form-grid">
+    <div>
+      <label>Rol permitido</label>
+      <select name="rol" required>
+        <option value="">Selecciona un rol</option>
+        <option value="docente">Docente</option>
+        <option value="admin">Admin</option>
+        <option value="admin_profesor">Admin profesor</option>
+      </select>
+    </div>
+
+    <div>
+      <label>Expira en</label>
+      <input type="datetime-local" name="fecha_expiracion" required>
+    </div>
+
+    <div class="full-row">
+      <button class="btn primary" type="submit">Generar llave</button>
+    </div>
+  </form>
+</div>
+
+  <div class="card tabla-card">
+  <h3>Llaves existentes</h3>
+
+  <div class="tabla-scroll">
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Rol</th>
+          <th>Creación</th>
+          <th>Expiración</th>
+          <th>Activa</th>
+          <th>Usada</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for l in llaves %}
+          <tr>
+            <td>{{ l.codigo }}</td>
+            <td>{{ l.rol_permitido }}</td>
+            <td>{{ l.fecha_creacion.strftime('%Y-%m-%d %H:%M') if l.fecha_creacion else '' }}</td>
+            <td>{{ l.fecha_expiracion.strftime('%Y-%m-%d %H:%M') if l.fecha_expiracion else '' }}</td>
+            <td>{{ "Sí" if l.activa else "No" }}</td>
+            <td>{{ "Sí" if l.usada else "No" }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

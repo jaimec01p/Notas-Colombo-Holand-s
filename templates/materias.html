@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planilla</title>
+  <link rel="stylesheet" href="/static/css/estilo_planilla.css">
+</head>
+<body>
+
+  <div class="topbar">
+    <a href="{{ url_for('ver_salon', salon_id=materia.salon_id) }}" class="btn">← Volver al salón</a>
+
+    <div class="info">
+      <h1>{{ materia.nombre }}</h1>
+      <p class="muted" style="color: white">Planilla de {{ materia.salon.grado }}</p>
+    </div>
+
+    <div class="right-buttons">
+      <button class="btn" id="btnAdministrarActividad">Administrar actividades</button>
+      <button class="btn primary" id="btnActividad">+ Añadir actividad</button>
+    </div>
+  </div>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, msg in messages %}
+        <div class="flash {{ category }}">{{ msg }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <div class="gradebook-wrap">
+    <div class="table-scroll table-area">
+      {% if actividades|length == 0 %}
+        <div class="empty-actividades">
+          Aún no hay actividades
+        </div>
+      {% endif %}
+
+      <div class="table-inner">
+        <table class="gradebook">
+          <thead>
+            <tr>
+              <th class="sticky-col th-estudiantes">
+                <div class="th-estudiantes-inner">
+                  <img class="logo" src="/static/img/colombo-holandes.jpeg">
+                  <span>Estudiantes</span>
+                </div>
+              </th>
+              {% for a in actividades %}
+                <th class="th-actividad">
+                  <span>{{ a.nombre }}</span>
+                </th>
+              {% endfor %}
+                <th class="th-final">Final</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for e in estudiantes %}
+              <tr>
+                <td class="sticky-col">{{ e.apellidos}} {{ e.nombres }}</td>
+
+                {% for a in actividades %}
+                  <td>
+                    <input class="nota" type="number" min="0" max="5" step="0.1"
+                          value="{{ notas_map.get((e.id, a.id), '') }}"
+                          data-estudiante="{{ e.id }}"
+                          data-actividad="{{ a.id }}"
+                          placeholder="—">
+                  </td>
+                {% endfor %}
+
+                <td class="td-final">
+                  <span class="final" data-estudiante="{{ e.id }}">—</span>
+                </td>
+              </tr>
+            {% endfor %}
+
+            {% if estudiantes|length == 0 %}
+              <tr>
+                <td class="sticky-col muted">No hay estudiantes en este salón</td>
+                <td class="muted">Agrega estudiantes desde la vista del salón.</td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Actividad -->
+  <div class="backdrop" id="backdropActividad">
+    <div class="modal" role="dialog" aria-modal="true">
+      <h2>Agregar actividad</h2>
+
+      <form method="POST" action="{{ url_for('crear_actividad', materia_id=materia.id) }}">
+        <label>Nombre</label>
+        <input name="nombre" placeholder="Ej: Quiz 1" required />
+
+        <div class="actions">
+          <button class="btn" type="button" id="cerrarActividad">Cancelar</button>
+          <button class="btn primary" type="submit">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Administrar Actividades -->
+  <div class="backdrop" id="backdropAdministrarActividad">
+    <div class="modal modal-actividades" role="dialog" aria-modal="true">
+      <h2>Administrar actividades</h2>
+
+      {% if actividades|length == 0 %}
+        <p class="muted" style="color: rgb(74, 74, 74);">Aún no hay actividades registradas.</p>
+      {% else %}
+        <div class="actividad-list">
+          {% for a in actividades %}
+            <div class="actividad-item" data-id="{{ a.id }}">
+
+              <!-- Vista normal -->
+              <div class="actividad-view" id="actividad-view-{{ a.id }}">
+                <div class="actividad-name">
+                  {{ a.nombre }}
+                </div>
+
+                <div class="actividad-actions-inline">
+                  <button type="button"
+                          class="btn btn-small btn-editar-actividad"
+                          data-id="{{ a.id }}">
+                    Editar
+                  </button>
+
+                  <button type="button"
+                          class="btn btn-small btn-danger btn-eliminar-actividad"
+                          data-id="{{ a.id }}">
+                    Eliminar
+                  </button>
+                </div>
+              </div>
+
+              <!-- Vista edición -->
+              <form method="POST"
+                    action="{{ url_for('editar_actividad', actividad_id=a.id) }}"
+                    class="actividad-edit"
+                    id="actividad-edit-{{ a.id }}"
+                    style="display: none;">
+
+                <div class="actividad-edit-row">
+                  <input type="text" name="nombre" value="{{ a.nombre }}" placeholder="Nombre de la actividad" required>
+
+                  <button type="submit" class="btn primary btn-small">Guardar</button>
+
+                  <button type="button"
+                          class="btn btn-small btn-cancelar-actividad"
+                          data-id="{{ a.id }}">
+                    Cancelar
+                  </button>
+                </div>
+              </form>
+
+              <!-- Confirmación eliminar -->
+              <div class="actividad-delete-confirm"
+                  id="actividad-delete-{{ a.id }}"
+                  style="display: none;">
+                <p>¿Seguro que deseas eliminar esta actividad?</p>
+
+                <div class="actividad-actions-inline">
+                  <form method="POST" action="{{ url_for('eliminar_actividad', actividad_id=a.id) }}">
+                    <button type="submit" class="btn btn-danger btn-small">Sí, eliminar</button>
+                  </form>
+
+                  <button type="button"
+                          class="btn btn-small btn-cancelar-eliminar-actividad"
+                          data-id="{{ a.id }}">
+                    Cancelar
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <div class="actions">
+        <button class="btn" type="button" id="cerrarAdministrarActividad">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Modal actividad
+    const btnActividad = document.getElementById("btnActividad");
+    const backdropActividad = document.getElementById("backdropActividad");
+    const cerrarActividad = document.getElementById("cerrarActividad");
+
+    function abrir(el){ el.classList.add("open"); }
+    function cerrar(el){ el.classList.remove("open"); }
+
+    btnActividad.addEventListener("click", () => abrir(backdropActividad));
+    cerrarActividad.addEventListener("click", () => cerrar(backdropActividad));
+    backdropActividad.addEventListener("click", (e) => { if (e.target === backdropActividad) cerrar(backdropActividad); });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") cerrar(backdropActividad); });
+
+    // Auto-guardar notas
+    async function guardarNota(input){
+      const form = new FormData();
+      form.append("estudiante_id", input.dataset.estudiante);
+      form.append("actividad_id", input.dataset.actividad);
+      form.append("valor", input.value);
+
+      const res = await fetch("{{ url_for('guardar_nota') }}", { method: "POST", body: form });
+      if(!res.ok){
+        input.style.borderColor = "red";
+        return;
+      }
+      input.style.borderColor = "#22c55e";
+      setTimeout(() => input.style.borderColor = "#ccc", 400);
+    }
+
+    document.querySelectorAll("input.nota").forEach((input) => {
+      input.addEventListener("change", () => guardarNota(input));
+      input.addEventListener("blur", () => guardarNota(input));
+    });
+
+
+    function calcularFinal(estudianteId){
+      const inputs = document.querySelectorAll(`input.nota[data-estudiante="${estudianteId}"]`);
+
+      if(inputs.length === 0){
+        const out = document.querySelector(`.final[data-estudiante="${estudianteId}"]`);
+        if(out) out.textContent = "—";
+        return;
+      }
+
+      let suma = 0;
+
+      inputs.forEach(inp => {
+        let v = parseFloat(inp.value);
+
+        if (Number.isNaN(v)) {
+          v = 1; // 🔥 si está vacío cuenta como 1
+        }
+
+        suma += v;
+      });
+
+      const promedio = suma / inputs.length;
+
+      const out = document.querySelector(`.final[data-estudiante="${estudianteId}"]`);
+      if(out){
+        out.textContent = promedio.toFixed(1);
+      }
+    }
+
+  function recalcularTodos(){
+    document.querySelectorAll(".final[data-estudiante]").forEach(el => {
+      calcularFinal(el.dataset.estudiante);
+    });
+  }
+
+  // al cargar
+  recalcularTodos();
+
+  // cuando cambias una nota, recalcula final de ese estudiante
+  document.querySelectorAll("input.nota").forEach((input) => {
+    input.addEventListener("change", () => calcularFinal(input.dataset.estudiante));
+    input.addEventListener("blur", () => calcularFinal(input.dataset.estudiante));
+  });
+  </script>
+
+  <script>
+  const btnAdministrarActividad = document.getElementById("btnAdministrarActividad");
+  const backdropAdministrarActividad = document.getElementById("backdropAdministrarActividad");
+  const cerrarAdministrarActividad = document.getElementById("cerrarAdministrarActividad");
+
+  function abrirModalActividadAdmin(){
+    backdropAdministrarActividad.classList.add("open");
+  }
+
+  function cerrarModalActividadAdmin(){
+    backdropAdministrarActividad.classList.remove("open");
+  }
+
+  btnAdministrarActividad.addEventListener("click", abrirModalActividadAdmin);
+  cerrarAdministrarActividad.addEventListener("click", cerrarModalActividadAdmin);
+
+  backdropAdministrarActividad.addEventListener("click", (e) => {
+    if (e.target === backdropAdministrarActividad) cerrarModalActividadAdmin();
+  });
+
+  function activarEdicionActividad(id){
+    document.getElementById(`actividad-view-${id}`).style.display = "none";
+    document.getElementById(`actividad-delete-${id}`).style.display = "none";
+    document.getElementById(`actividad-edit-${id}`).style.display = "block";
+  }
+
+  function cancelarEdicionActividad(id){
+    document.getElementById(`actividad-edit-${id}`).style.display = "none";
+    document.getElementById(`actividad-view-${id}`).style.display = "grid";
+  }
+
+  function confirmarEliminarActividad(id){
+    document.getElementById(`actividad-view-${id}`).style.display = "none";
+    document.getElementById(`actividad-edit-${id}`).style.display = "none";
+    document.getElementById(`actividad-delete-${id}`).style.display = "block";
+  }
+
+  function cancelarEliminarActividad(id){
+    document.getElementById(`actividad-delete-${id}`).style.display = "none";
+    document.getElementById(`actividad-view-${id}`).style.display = "grid";
+  }
+
+  document.querySelectorAll(".btn-editar-actividad").forEach((btn) => {
+    btn.addEventListener("click", () => activarEdicionActividad(btn.dataset.id));
+  });
+
+  document.querySelectorAll(".btn-cancelar-actividad").forEach((btn) => {
+    btn.addEventListener("click", () => cancelarEdicionActividad(btn.dataset.id));
+  });
+
+  document.querySelectorAll(".btn-eliminar-actividad").forEach((btn) => {
+    btn.addEventListener("click", () => confirmarEliminarActividad(btn.dataset.id));
+  });
+
+  document.querySelectorAll(".btn-cancelar-eliminar-actividad").forEach((btn) => {
+    btn.addEventListener("click", () => cancelarEliminarActividad(btn.dataset.id));
+  });
+</script>
+
+</body>
+</html>

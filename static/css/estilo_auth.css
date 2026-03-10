@@ -1,0 +1,151 @@
+body{
+  margin: 0;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+
+    background-image: url("/static/img/escudo_CH.png") ;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: auto 100vh;
+
+    opacity: 0.15;
+    pointer-events: none;
+    z-index: 0;
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.auth-wrapper{
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  position: relative;
+  z-index: 2;
+  margin-top: -22px;
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:12px;
+  margin-bottom:8px;
+}
+
+.auth-card{
+  width: 100%;
+  max-width: 300px;
+  background: #ffffffd2;
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 12px 30px rgba(0,0,0,.08);
+}
+
+.auth-card h1{
+  margin: 0 0 8px;
+  font-size: 28px;
+}
+
+.muted{
+  color: #666;
+  margin-bottom: 18px;
+}
+
+.auth-form{
+  display: grid;
+  gap: 10px;
+}
+
+select{
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px 12px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  outline: none;
+  background: white;
+}
+
+select:focus{
+  border-color: #666;
+} 
+
+label{
+  font-size: 14px;
+  font-weight: 600;
+}
+
+input{
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px 12px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  outline: none;
+}
+
+input:focus{
+  border-color: #666;
+}
+
+.btn{
+  margin-top: 10px;
+  padding: 12px 14px;
+  border: 1px solid #ccc;
+  background: #f7f7f7;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn.primary{
+  background: rgb(34,44,247);
+  color: #fff;
+  border-color: rgb(34,44,247);
+}
+
+.btn.primary:hover{
+  background: rgb(29, 38, 208);
+}
+
+.flash{
+  padding: 10px 12px;
+  border-radius: 10px;
+  margin: 12px 0;
+}
+
+.flash.success{
+  background: #e9f7ef;
+  border: 1px solid #b7e1c7;
+}
+
+.flash.error{
+  background: #fdecea;
+  border: 1px solid #f5c2c0;
+}
+
+.auth-link{
+  margin-top: 16px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.auth-link a{
+  font-weight: 700;
+  color: rgb(29, 38, 208);
+}

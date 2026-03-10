@@ -1,0 +1,33 @@
+{% extends "admin.html" %}
+
+{% block title %}Docentes{% endblock %}
+{% block page_title %}Docentes registrados{% endblock %}
+
+{% block content %}
+  <div class="contenido-admin-cards">
+    <div class="list-admin-cards">
+      {% if docentes|length == 0 %}
+        <div class="card-docente empty-card">
+          <div class="msm-title">Aún no hay docentes registrados</div>
+          <div class="muted-dark">Cuando se registren docentes, aparecerán aquí.</div>
+        </div>
+      {% else %}
+        {% for u in docentes %}
+          <a class="card-docente card-link" href="javascript:void(0)">
+            <div class="title-card">{{ u.apellidos }} {{ u.nombres }}</div>
+            <div class="muted-dark">Identificación: {{ u.identificacion }}</div>
+            <div class="muted-dark">{{ u.email }}</div>
+
+            <div class="badge-docente
+              {% if u.rol == 'docente' %}docente
+              {% elif u.rol == 'admin' %}admin
+              {% elif u.rol == 'admin_profesor' %}admin-profesor
+              {% endif %}">
+              {{ u.rol }}
+            </div>
+          </a>
+        {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Panel Admin{% endblock %}</title>
+  <link rel="stylesheet" href="/static/css/estilo_admin.css">
+</head>
+<body>
+  <div class="admin-layout">
+    <aside class="sidebar">
+      <h2>Administración</h2>
+
+      <nav class="sidebar-nav">
+        <a href="{{ url_for('panel_admin') }}">Inicio</a>
+        <a href="{{ url_for('admin_docentes') }}">Docentes</a>
+        <a href="{{ url_for('admin_llaves') }}">Llaves de registro</a>
+        <a href="javascript:void(0)">Salones</a>
+        <a href="javascript:void(0)">Reportes</a>
+        <a href="javascript:void(0)">Configuración</a>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <div class="topbar">
+        <h1>{% block page_title %}Panel administrativo{% endblock %}</h1>
+
+        <div class="topbar-actions">
+          {% if session["usuario_rol"] == "admin_profesor" %}
+            <a class="btn" href="{{ url_for('index') }}">Vista docente</a>
+          {% endif %}
+          <a class="btn" href="{{ url_for('logout') }}">Cerrar sesión</a>
+        </div>
+      </div>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, msg in messages %}
+            <div class="flash {{ category }}">{{ msg }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</body>
+</html>

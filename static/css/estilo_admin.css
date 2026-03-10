@@ -1,0 +1,300 @@
+body{
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f5f6f8;
+  height: 100vh;
+  overflow: hidden; /* la página no hace scroll */
+}
+
+.admin-layout{
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  height: 100vh; /* ocupa toda la pantalla */
+}
+
+.sidebar{
+  background: rgb(34, 44, 247);
+  color:white;
+  padding:24px 18px;
+}
+
+.sidebar h2{
+  margin-top:0;
+}
+
+.sidebar-nav{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin-top:20px;
+}
+
+.sidebar-nav a{
+  color:white;
+  text-decoration:none;
+  padding:10px 12px;
+  border-radius:8px;
+}
+
+.sidebar-nav a:hover{
+  background: rgba(255,255,255,0.15);
+}
+
+.main-content{
+  padding: 24px;
+  overflow: hidden; /* evita scroll general aquí también */
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  box-sizing: border-box;
+}
+
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background: rgb(34, 44, 247);
+  color:white;
+  padding:15px;
+  border-radius:8px;
+  margin-bottom:14px;
+}
+
+.topbar-actions{
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+
+.btn{
+  padding:10px 14px;
+  border:1px solid #ccc;
+  background:#f7f7f7;
+  border-radius:10px;
+  text-decoration:none;
+  color:black;
+  cursor:pointer;
+}
+
+.btn.primary{
+  background:#111;
+  color:#fff;
+  border-color:#111;
+}
+
+.flash{
+  padding:10px 12px;
+  border-radius:10px;
+  margin:10px 0;
+}
+
+.flash.success{
+  background:#e9f7ef;
+  border:1px solid #b7e1c7;
+}
+
+.flash.error{
+  background:#fdecea;
+  border:1px solid #f5c2c0;
+}
+
+.card{
+  background:white;
+  border-radius:14px;
+  padding:18px;
+  box-shadow:0 10px 30px rgba(0,0,0,.08);
+  margin-bottom:20px;
+}
+
+.form-grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 14px;
+  align-items: end;
+}
+
+.full-row{
+  grid-column: auto;
+}
+
+.card.form-card{
+  flex: 0 0 auto;
+}
+
+.card.tabla-card{
+  flex: 1 1 auto;
+}
+
+label{
+  display:block;
+  margin-bottom:6px;
+  font-size:14px;
+}
+
+input, select{
+  width:100%;
+  box-sizing:border-box;
+  padding:10px;
+  border:1px solid #ccc;
+  border-radius:10px;
+}
+
+.tabla{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+}
+
+.tabla th, .tabla td{
+  border-bottom:1px solid #ddd;
+  padding:10px;
+  text-align:left;
+}
+
+.tabla-card{
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+}
+
+.tabla-scroll{
+  overflow-y: auto;
+  overflow-x: auto;
+  max-height: 100%;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+}
+
+.tabla{
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0;
+}
+
+.tabla th, .tabla td{
+  border-bottom: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.tabla thead th{
+  position: sticky;
+  top: 0;
+  background: #f0f0f0;
+  z-index: 2;
+}
+
+/* Vista de docentes en cards */
+.contenido-admin-cards{
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+  min-height: 0;
+  padding-right: 4px;
+}
+
+.list-admin-cards{
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  width: 100%;
+}
+
+.card-docente{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.06);
+  background-color: rgb(34, 44, 247);
+  color: white;
+  min-height: 170px;
+  box-sizing: border-box;
+}
+
+.card-link{
+  text-decoration: none;
+  color: inherit;
+  transition: .12s;
+}
+
+.card-link:hover{
+  transform: translateY(-2px);
+  border-color: #cfcfcf;
+}
+
+.title-card{
+  background-color: rgb(26, 35, 193);
+  padding: 5px;
+  border-radius: 15px;
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1.2;
+  color: white;
+}
+
+.msm-title{
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.muted-dark{
+  color: white;
+  font-size: 13px;
+  opacity: 0.95;
+}
+
+.badge-docente{
+  margin: 8px auto 0;
+  width: max-content;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: rgba(255,255,255,0.18);
+  border: 1px solid rgba(255,255,255,0.25);
+}
+
+.badge-docente.docente{
+  background: rgba(255,255,255,0.18);
+}
+
+.badge-docente.admin{
+  background: rgba(0,0,0,0.18);
+}
+
+.badge-docente.admin-profesor{
+  background: rgba(255,255,255,0.28);
+}
+
+.empty-card{
+  grid-column: 1 / -1;
+  justify-self: center;
+  max-width: 420px;
+  width: 100%;
+}
+
+@media (max-width: 1100px){
+  .list-admin-cards{
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 800px){
+  .list-admin-cards{
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px){
+  .list-admin-cards{
+    grid-template-columns: 1fr;
+  }
+}

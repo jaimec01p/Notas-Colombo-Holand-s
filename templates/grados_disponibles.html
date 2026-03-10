@@ -1,0 +1,27 @@
+{% extends "plantilla.html" %}
+
+{% block css %}
+<link rel="stylesheet" href="/static/css/estilo_grados_disponibles.css">
+{% endblock %}
+
+{% block contenido %}
+<div class="formulario">
+    <form>
+        <div class="entrada">
+            <label for="grado">Grado: </label>
+            <input type="text" name="grado" id="grado">
+        </div>
+   
+        <div class="entrada">
+            <label for="materias">Materías: </label>
+            <input type="text" name="materias" id="materias">
+        </div>
+    
+        <div class="entrada">
+            <label for="director_grupo" >Director de Grupo: </label>
+            <input type="text" name="director_grupo" id="director_grupo"></label>
+        </div>
+</form>
+</div>
+
+{% endblock %}

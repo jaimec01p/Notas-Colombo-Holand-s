@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Salón {{ salon.grado }}</title>
+  <link rel="stylesheet" href="/static/css/estilo_salon.css">
+</head>
+<body>
+
+  <div class="topbar">
+    <a class="btn" href="{{ url_for('index') }}">← Volver</a>
+
+    <div class="info">
+      <h1>{{ salon.grado }}</h1>
+      <p class="muted">Dir. de grupo: {{ salon.director }}</p>
+    </div>
+
+    <div class="right-buttons">
+      <button class="btn" id="btnVerEstudiantes">Ver estudiantes</button>
+      <button class="btn primary" id="btnAbrir">+ Añadir materia</button>
+      <button class="btn" id="btnAgregarEstudiante">+ Añadir estudiante</button>
+    </div>
+  </div>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, msg in messages %}
+        <div class="flash {{ category }}" >{{ msg }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <div class="contenido">
+    <div class="list">
+      {% if materias|length == 0 %}
+        <div class="card">
+          <div class="title">Aún no hay materias</div>
+          <div class="muted" style="color: white;">Pulsa “+ Añadir materia” para crear la primera.</div>
+        </div>
+      {% else %}
+        {% for m in materias %}
+          <a class="card card-link" href="{{ url_for('ver_materia', materia_id=m.id) }}">
+            <div class="title">{{ m.nombre }}</div>
+            <div class="muted" style="color: white;">Abrir planilla →</div>
+          </a>
+        {% endfor %}
+      {% endif %}
+    </div>
+
+    <!-- Modal -->
+    <div class="backdrop {% if modal_open %}open{% endif %}" id="backdrop">
+      <div class="modal" role="dialog" aria-modal="true">
+        <h2>Agregar materia</h2>
+
+        <form method="POST" action="{{ url_for('crear_materia', salon_id=salon.id) }}">
+          <label>Nombre de la materia</label>
+          <input name="nombre" placeholder="Ej: Matemáticas" required value="{{ form_data.get('nombre','') }}"/>
+
+          <div class="actions">
+            <button class="btn" type="button" id="btnCerrar">Cancelar</button>
+            <button class="btn primary" type="submit">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Agregar Estudiante -->
+    <div class="backdrop" id="backdropAgregarEstudiante">
+      <div class="modal" role="dialog" aria-modal="true">
+        <h2>Agregar estudiante</h2>
+
+        <form method="POST" action="{{ url_for('crear_estudiante_salon', salon_id=salon.id) }}">
+          <label>Nombres</label>
+          <input name="nombres" placeholder="Ej: Juan David" required>
+
+          <label>Apellidos</label>
+          <input name="apellidos" placeholder="Ej: Pérez Gómez" required>
+
+          <div class="actions">
+            <button class="btn" type="button" id="cerrarAgregarEstudiante">Cancelar</button>
+            <button class="btn primary" type="submit">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Ver Estudiantes -->
+    <div class="backdrop" id="backdropVerEstudiantes">
+    <div class="modal modal-estudiantes" role="dialog" aria-modal="true">
+      <h2>Estudiantes del salón</h2>
+
+      {% if estudiantes|length == 0 %}
+        <p class="muted" style="color: rgb(74, 74, 74);">Aún no has agregado estudiantes.</p>
+      {% else %}
+        <div class="student-list">
+          {% for e in estudiantes %}
+            <div class="student-item" data-id="{{ e.id }}">
+
+            <div class="student-view" id="view-{{ e.id }}">
+              <div class="student-name">
+                {{ e.apellidos }} {{ e.nombres }}
+              </div>
+
+              <div class="student-actions-inline">
+                <button type="button"
+                        class="btn btn-small btn-editar"
+                        data-id="{{ e.id }}">
+                  Editar
+                </button>
+              </div>
+            </div>
+
+            <form method="POST"
+                  action="{{ url_for('editar_estudiante', estudiante_id=e.id) }}"
+                  class="student-edit"
+                  id="edit-{{ e.id }}"
+                  style="display: none;">
+
+              <div class="student-edit-row">
+                <input type="text" name="apellidos" value="{{ e.apellidos }}" placeholder="Apellidos" required>
+                <input type="text" name="nombres" value="{{ e.nombres }}" placeholder="Nombres" required>
+
+                <button type="submit" class="btn primary btn-small">Guardar</button>
+                <button type="button"
+                        class="btn btn-small btn-cancelar"
+                        data-id="{{ e.id }}">
+                  Cancelar
+                </button>
+              </div>
+            </form>
+
+          </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <div class="actions">
+        <button class="btn" type="button" id="cerrarVerEstudiantes">Cerrar</button>
+      </div>
+    </div>
+  </div>
+  </div>
+  
+  <script>
+    const backdrop = document.getElementById("backdrop");
+    const btnAbrir = document.getElementById("btnAbrir");
+    const btnCerrar = document.getElementById("btnCerrar");
+
+    function abrir() { backdrop.classList.add("open"); }
+    function cerrar() { backdrop.classList.remove("open"); }
+
+    btnAbrir.addEventListener("click", abrir);
+    btnCerrar.addEventListener("click", cerrar);
+
+    backdrop.addEventListener("click", (e) => { if (e.target === backdrop) cerrar(); });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") cerrar(); });
+  </script>
+
+  <script>
+  const backdropAgregarEstudiante = document.getElementById("backdropAgregarEstudiante");
+  const backdropVerEstudiantes = document.getElementById("backdropVerEstudiantes");
+
+  const btnAgregarEstudiante = document.getElementById("btnAgregarEstudiante");
+  const btnVerEstudiantes = document.getElementById("btnVerEstudiantes");
+
+  const cerrarAgregarEstudiante = document.getElementById("cerrarAgregarEstudiante");
+  const cerrarVerEstudiantes = document.getElementById("cerrarVerEstudiantes");
+
+  function abrir(el){ el.classList.add("open"); }
+  function cerrar(el){ el.classList.remove("open"); }
+
+  btnAgregarEstudiante.addEventListener("click", () => abrir(backdropAgregarEstudiante));
+  btnVerEstudiantes.addEventListener("click", () => abrir(backdropVerEstudiantes));
+
+  cerrarAgregarEstudiante.addEventListener("click", () => cerrar(backdropAgregarEstudiante));
+  cerrarVerEstudiantes.addEventListener("click", () => cerrar(backdropVerEstudiantes));
+
+  backdropAgregarEstudiante.addEventListener("click", (e) => { if (e.target === backdropAgregarEstudiante) cerrar(backdropAgregarEstudiante); });
+  backdropVerEstudiantes.addEventListener("click", (e) => { if (e.target === backdropVerEstudiantes) cerrar(backdropVerEstudiantes); });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      cerrar(backdropAgregarEstudiante);
+      cerrar(backdropVerEstudiantes);
+    }
+  });
+  </script>
+
+  <script>
+    function activarEdicion(id){
+      document.getElementById(`view-${id}`).style.display = "none";
+      document.getElementById(`edit-${id}`).style.display = "block";
+    }
+
+    function cancelarEdicion(id){
+      document.getElementById(`edit-${id}`).style.display = "none";
+      document.getElementById(`view-${id}`).style.display = "grid";
+    }
+
+    document.querySelectorAll(".btn-editar").forEach((btn) => {
+      btn.addEventListener("click", () => activarEdicion(btn.dataset.id));
+    });
+
+    document.querySelectorAll(".btn-cancelar").forEach((btn) => {
+      btn.addEventListener("click", () => cancelarEdicion(btn.dataset.id));
+    });
+  </script>
+
+</body>
+</html>

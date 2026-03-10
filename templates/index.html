@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Materias</title>
+  <link rel="stylesheet" href="/static/css/estilo_index.css">
+</head>
+
+<body>
+  <div class="header-fixed">
+    <div class="topbar">
+      <h1>Mis Salones</h1>
+
+      <div class="topbar-actions">
+        <a class="btn" href="{{ url_for('logout') }}">Cerrar sesión</a>
+        <button class="btn" id="btnAbrir">+ Añadir</button>
+      </div>
+    </div>
+
+    {% if session["usuario_rol"] == "admin_profesor" %}
+      <div class="subtopbar">
+        <a class="btn" href="{{ url_for('panel_admin') }}">Vista administrador</a>
+      </div>
+    {% endif %}
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, msg in messages %}
+          <div class="flash {{ category }}">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  </div>
+
+  <div class="contenido">
+    <!-- Lista de materias (carga al entrar a la página) -->
+    <div class="list">
+      {% if salones|length == 0 %}
+        <div class="card empty-card">
+          <div class="msm-title">Aún no tienes salones agregados</div>
+          <div class="muted">Pulsa “+ Añadir” para crear la primera.</div>
+        </div>
+      {% else %}
+        {% for m in salones %}
+          <a class="card card-link" href="{{ url_for('ver_salon', salon_id=m.id) }}">
+            <div class="title">{{ m.grado }}</div>
+            <div class="muted">Dir. de grupo: {{ m.director }}</div>
+          </a>
+        {% endfor %}
+      {% endif %}
+    </div>
+
+    <!-- Modal -->
+      <div class="backdrop {% if modal_open %}open{% endif %}" id="backdrop">
+        <div class="modal" role="dialog" aria-modal="true">
+          <h2>Agregar salon</h2>
+
+          <form method="POST" action="{{ url_for('crear_salon') }}">
+            <label>Grado</label>
+            <input name="grado" placeholder="Ej: 7°B" required value="{{ form_data.get('grado','') }}"/>
+
+            <label>Director de grupo</label>
+            <input name="director" placeholder="Ej: Prof. Ana Pérez" required value="{{ form_data.get('director','') }}"/>
+
+            <div class="actions">
+              <button class="btn" type="button" id="btnCerrar">Cancelar</button>
+              <button class="btn primary" type="submit">Guardar</button>
+            </div>
+          </form>
+      </div>
+    </div>
+  </div>
+  
+
+  <script>
+    const backdrop = document.getElementById("backdrop");
+    const btnAbrir = document.getElementById("btnAbrir");
+    const btnCerrar = document.getElementById("btnCerrar");
+
+    function abrir() { backdrop.classList.add("open"); }
+    function cerrar() { backdrop.classList.remove("open"); }
+
+    btnAbrir.addEventListener("click", abrir);
+    btnCerrar.addEventListener("click", cerrar);
+
+    // cerrar clic fuera
+    backdrop.addEventListener("click", (e) => { if (e.target === backdrop) cerrar(); });
+    // cerrar con Escape
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") cerrar(); });
+  </script>
+</body>
+</html>
