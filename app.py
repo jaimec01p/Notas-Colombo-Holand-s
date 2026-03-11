@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
+import os
 import re
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
@@ -9,9 +10,12 @@ import secrets
 import string
 
 app = Flask(__name__)
-app.secret_key = "cambia-esto"
+app.secret_key = os.environ.get("SECRET_KEY", "devkey")
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///CCH.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
+    "DATABASE_URL",
+    "sqlite:///CCH.db"
+)
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 
